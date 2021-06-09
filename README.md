@@ -28,9 +28,9 @@ cd repo_testwork
 ```
 3.  Запустить ansible playbook: 
 ```bash
-ansible-playbook ansible-testwork.yml
+sudo ansible-playbook ansible-testwork.yml
 ```
 4. Установить пакет из репозитория командой:
 ```bash
-apt install tw-peervpn
+sudo apt install tw-peervpn
 ```
