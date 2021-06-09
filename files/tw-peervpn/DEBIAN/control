@@ -1,0 +1,7 @@
+Package: tw-peervpn
+Version: 0.0.1
+Section: misc
+Architecture: amd64
+Depends: libssl1.0.0
+Maintainer: TW user <wpstnik@gmail.com>
+Description: PeerVPN

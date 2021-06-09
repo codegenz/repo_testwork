@@ -1,0 +1,64 @@
+---
+- hosts: localhost
+
+  tasks:
+    - name: Get PeerVPN sources from Github
+      git: 
+        repo: https://github.com/peervpn/peervpn
+        dest: /tmp/peervpn
+    - name: Install C compiler
+      apt:
+        name: gcc
+    - name: Install Libraries
+      apt:
+        name: libssl1.0-dev,libcrypto++-dev,zlib1g-dev
+    - name: Install dpkg-dev and nginx
+      apt:
+        name: dpkg-dev,nginx
+    - name: Make PeerVPN object file
+      command: cc -O2   -c -o peervpn.o peervpn.c
+      args:
+        chdir: /tmp/peervpn
+    - name: Build PeerVPN binary file
+      command: cc  peervpn.o -lcrypto -lz -o peervpn
+      args:
+        chdir: /tmp/peervpn
+    - name: Copy deb template
+      copy:
+        src: tw-peervpn/
+        dest: /tmp/tw-peervpn
+    - name: Copy Nginx config
+      copy:
+        src: nginx/
+        dest: /etc/nginx/sites-enabled/
+    - name: Remove default config if exist
+      file:
+        path: "/etc/nginx/sites-enabled/default"
+        state: absent
+    - name: Nginx reload
+      command: nginx -s reload
+    - name: Copy peervpn to deb template
+      copy:
+        src: /tmp/peervpn/peervpn
+        dest: /tmp/tw-peervpn/usr/local/bin/
+        follow: yes
+        mode: '0755'
+    - name: Create a repo directory if it does not exist
+      file:
+        path: /opt/tw-repo/peervpn
+        state: directory
+        mode: '0755'
+    - name: Make deb package
+      command: dpkg-deb --build /tmp/tw-peervpn tw-peervpn.deb
+      args:
+        chdir: /opt/tw-repo/peervpn
+    - name: Make deb package
+      command: sh -c 'dpkg-scanpackages . /dev/null | gzip -9c > Packages.gz'
+      args:
+        chdir: /opt/tw-repo/peervpn
+    - name: Add repo to apt sources list
+      lineinfile:
+        state: present
+        path: "/etc/apt/sources.list"
+        line: "deb [trusted=yes] http://localhost/peervpn ./"
+        create: yes
