@@ -18,7 +18,19 @@
  2. собранный deb пакет устанавливается из репозитория, бинарный файл размещается в /usr/local/bin
 
 # Запуск
-Осуществляется при помощи ansible: 
+1. Скопировать этот репозиторий: 
+```bash
+git clone https://github.com/codegenz/repo_testwork.git
+```
+2. Перейти в него
+```bash
+cd repo_testwork
+```
+3.  Запустить ansible playbook: 
 ```bash
 ansible-playbook ansible-testwork.yml
+```
+4. Установить пакет из репозитория командой:
+```bash
+apt install tw-peervpn
 ```
