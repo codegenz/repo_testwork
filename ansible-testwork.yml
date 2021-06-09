@@ -62,3 +62,6 @@
         path: "/etc/apt/sources.list"
         line: "deb [trusted=yes] http://localhost/peervpn ./"
         create: yes
+    - name: Apt update
+      apt:
+        update_cache: yes
